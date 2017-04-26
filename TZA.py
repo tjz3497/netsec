@@ -16,8 +16,6 @@ timestamp = timestamp[0]
 timeInt = int(timestamp)
 
 #TEST
-#timeTest = datetime.datetime.fromtimestamp(timeInt)
-#print(timeTest.strftime("%Y/%m/%d, %H:%M:%S"))
 print(time.ctime(timeInt))
 
 #######LOCAL######################
