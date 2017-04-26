@@ -3,6 +3,7 @@ import requests
 import re
 import time
 from keys_local import *
+import json
 
 #VARIABLE BLOCK for ip to lat
 IPINFO_START = "http://ipinfo.io/"
@@ -23,7 +24,6 @@ timestamp = timestamp[0]
 #VARIABLE BLOCK for map timezone api
 TZ_CALL = "https://maps.googleapis.com/maps/api/timezone/json?location="+latlon+"&timestamp="+timestamp+"&key="+MAPS_TZ_API
 tz_out = requests.get(TZ_CALL)
-for i in tz_out:
-	print(i)
-
+data = tz_out.json()
+print(data["rawOffset"])
 exit()
