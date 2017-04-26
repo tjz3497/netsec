@@ -36,9 +36,7 @@ data = tz_out.json()
 #combine raw offset with DST
 raw = data["rawOffset"]
 dst = data["dstOffset"]
-#if raw < 0:
-#	localTot = raw-dst
-#else:
+
 localTot = raw+dst+timeInt
 print(time.ctime(localTot))
 print("Local Timezone is: "+data["timeZoneName"])
@@ -62,9 +60,7 @@ data = tz_out.json()
 #combine raw offset with DST
 raw = data["rawOffset"]
 dst = data["dstOffset"]
-#if raw < 0:
-#	destTot = raw-dst
-#else:
+
 destTot = raw+dst+timeInt
 print(time.ctime(destTot))
 print("Destination Timezone is: "+data["timeZoneName"])
