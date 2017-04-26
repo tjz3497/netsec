@@ -13,6 +13,12 @@ IPINFO_END = "/loc"
 timestamp = time.time()
 timestamp = str(timestamp).split(".")
 timestamp = timestamp[0]
+timeInt = int(timestamp)
+
+#TEST
+#timeTest = datetime.datetime.fromtimestamp(timeInt)
+#print(timeTest.strftime("%Y/%m/%d, %H:%M:%S"))
+print(time.ctime(timeInt))
 
 #######LOCAL######################
 #get local info
@@ -35,8 +41,8 @@ dst = data["dstOffset"]
 #if raw < 0:
 #	localTot = raw-dst
 #else:
-localTot = raw+dst
-print(localTot)
+localTot = raw+dst+timeInt
+print(time.ctime(localTot))
 print("Local Timezone is: "+data["timeZoneName"])
 #######END LOCAL######################
 
@@ -61,8 +67,8 @@ dst = data["dstOffset"]
 #if raw < 0:
 #	destTot = raw-dst
 #else:
-destTot = raw+dst
-print(destTot)
+destTot = raw+dst+timeInt
+print(time.ctime(destTot))
 print("Destination Timezone is: "+data["timeZoneName"])
 #######END DEST######################
 
