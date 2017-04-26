@@ -17,6 +17,8 @@ timeInt = int(timestamp)
 
 #TEST
 print(time.ctime(timeInt))
+#account for local  time offset of 4 hours
+timeInt = timeInt + (3600 * 4)
 
 #######LOCAL######################
 #get local info
