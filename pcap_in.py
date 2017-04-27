@@ -1,10 +1,18 @@
-import scapy
+from scapy.all import *
+import time
 
-pkts = rdpcap("data.pcap")
+def cutter():
+#pkts = rdpcap("SkypeIRC.cap")
+	pkts = rdpcap("data.pcap")
 
-test = ""
-for pkt in pkts:
-	temp = pkt.sprintf("%IP.src%,%IP.dst%,")
-	test = test + temp
+	bad = ['0.0.0.0', '??']
+	cut = {}
+	for pkt in pkts:
+		key = (pkt.sprintf("%IP.src%")).strip()
+		for k in bad:
+			if not (key == k):
+				cut[key] = pkt.time
+	#	temp = pkt.sprintf("%IP.src%,%IP.dst%,")
+	#	cut = cut + temp
 
-print(test)
+	return cut;
