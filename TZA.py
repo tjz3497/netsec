@@ -40,15 +40,40 @@ def the_goods():
 	#print(time.ctime(localTot))
 	tester = 0
 	for i, j in PCAP_DICT.items():
-		if tester == 1:
+		if tester == 2:
 			ipper = i
 		tester = tester + 1
-	print(ipper)
-	destTot = get_time_info(islocal = 0, ip = ipper, stamp = timestamp, tint = timeInt)
-	print(time.ctime(destTot[2]))
+	#print(ipper, end='\n\n')
+
+	time_break = get_time_info(islocal = 0, ip = ipper, stamp = timestamp)
+	from_cap = int(PCAP_DICT[ipper])
+	time_of_connection = int(time_break[0]) + int(time_break[1]) + from_cap
+
+	#print(from_cap)
+	#print(time.ctime(from_cap), end='\n\n')
+
+	#print(time_of_connection)
+	#print(time.ctime(time_of_connection), end='\n\n')
+
+	#print(time.localtime(from_cap))
+	#print(time.localtime(time_of_connection))
+
+	timeZone_IDC = {}
+	timeZone_IDC = timeZone_ID_Counter(tzIDC = timeZone_IDC, tzID = time_break[2])
+	print(timeZone_IDC)
+
 	exit()
 
-def get_time_info(islocal, ip, stamp, tint):
+def timeZone_ID_Counter(tzIDC, tzID):
+	for key in tzIDC.keys():
+		if tzID == key:
+			tzIDC[key] = tzIDC[key] + 1
+			return tzIDC
+	tzIDC[tzID] = 1
+	return tzIDC
+
+
+def get_time_info(islocal, ip, stamp):
 	req = ""
 	#if its not local we need to supply an IP address in the request
 	#noIP
@@ -73,9 +98,8 @@ def get_time_info(islocal, ip, stamp, tint):
 	#get the raw offset and DST offset values
 	raw = data["rawOffset"]
 	dst = data["dstOffset"]
+	tzid = data["timeZoneId"]
 	#add em up for the actual time
-	timeTot = raw+dst+tint
-	results = (raw, dst, timeTot)
+	results = (raw, dst, tzid)
 	return results
-
 the_goods()
