@@ -6,10 +6,11 @@ Simply download and run the presented files from the command line.
 
 Dependencies:
 Python3
-scapy3 package
+scapy3k (pip install scapy-python3)
 
 APIs:
-Must have a google maps timezone (https://developers.google.com/maps/documentation/timezone/intro#Responses) API key played in a keys_local.py file in the local directory
+Must have a google maps timezone (https://developers.google.com/maps/documentation/timezone/intro#Responses) API key placed in a keys_local.py file in the local directory with the variable
+name 'MAPS_TZ_API'
 
 Contributors - Tyler Zimmermann tjz3497@rit.edu
 
