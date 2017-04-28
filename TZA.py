@@ -22,9 +22,6 @@ def the_goods():
 
 	#GET THE PCAP STUFF
 	PCAP_DICT = cutter()
-	#for i, j in PCAP_DICT.items():
-	#	print(i + " , ", end='')
-	#	print(j)
 
 	#get local timestamp for maps timezone api call
 	timestamp = time.time()
@@ -32,37 +29,45 @@ def the_goods():
 	timestamp = timestamp[0]
 	#make it an int for math later
 	timeInt = int(timestamp)
-	#print(time.ctime(timeInt))
 	#account for local  time offset of 4 hours
 	timeInt = timeInt + (3600 * 4)
 
-	#localTot = get_time_info(islocal = 1, ip = 0, stamp = timestamp, tint = timeInt)
-	#print(time.ctime(localTot))
-	tester = 0
-	for i, j in PCAP_DICT.items():
-		if tester == 2:
-			ipper = i
-		tester = tester + 1
-	#print(ipper, end='\n\n')
-
-	time_break = get_time_info(islocal = 0, ip = ipper, stamp = timestamp)
-	from_cap = int(PCAP_DICT[ipper])
-	time_of_connection = int(time_break[0]) + int(time_break[1]) + from_cap
-
-	#print(from_cap)
-	#print(time.ctime(from_cap), end='\n\n')
-
-	#print(time_of_connection)
-	#print(time.ctime(time_of_connection), end='\n\n')
-
-	#print(time.localtime(from_cap))
-	#print(time.localtime(time_of_connection))
-
+	#make a dictionary to hold the count of different timezones
+	#IDC = id counter
 	timeZone_IDC = {}
-	timeZone_IDC = timeZone_ID_Counter(tzIDC = timeZone_IDC, tzID = time_break[2])
-	print(timeZone_IDC)
+	local_counts = {}
+
+	for ipper, j in PCAP_DICT.items():
+		#get the break down of time info aka raw offset, dst offset, and time zone id
+		time_break = get_time_info(islocal = 0, ip = ipper, stamp = timestamp)
+		#get the timestamp from the capture for the given ip
+		from_cap = int(PCAP_DICT[ipper])
+		#calculate the local time of connection based on the above two value sets
+		time_of_connection = int(time_break[0]) + int(time_break[1]) + from_cap
+
+		#get the local time (just hour/minute/second) in seconds for math later
+		#note to self: index 3 is hour, 4 is minute, 5 is second
+		time_attribs = time.localtime(time_of_connection)
+		local_count = (time_attribs[3] * 3600) + (time_attribs[4] * 60) + time_attribs[5]
+		local_counts[ipper] = local_count
+
+		#add the current timezone id to the dictionary counting timezone ids
+		timeZone_IDC = timeZone_ID_Counter(tzIDC = timeZone_IDC, tzID = time_break[2])
+
+	#do the maths
+	print(local_counts)
+	average_connection_time = big_mather(local_counts)
+	print(average_connection_time)
 
 	exit()
+
+def big_mather(counts):
+	average_time = 0
+	how_many = 0
+	for i,j in counts.items():
+		average_time += j
+		how_many += 1
+	return int(average_time / how_many)
 
 def timeZone_ID_Counter(tzIDC, tzID):
 	for key in tzIDC.keys():
@@ -102,4 +107,5 @@ def get_time_info(islocal, ip, stamp):
 	#add em up for the actual time
 	results = (raw, dst, tzid)
 	return results
+
 the_goods()
