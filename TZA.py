@@ -37,6 +37,7 @@ def the_goods():
 	timeZone_IDC = {}
 	local_counts = {}
 
+	#get some big time info for all the IPs
 	for ipper, j in PCAP_DICT.items():
 		#get the break down of time info aka raw offset, dst offset, and time zone id
 		time_break = get_time_info(islocal = 0, ip = ipper, stamp = timestamp)
@@ -55,11 +56,30 @@ def the_goods():
 		timeZone_IDC = timeZone_ID_Counter(tzIDC = timeZone_IDC, tzID = time_break[2])
 
 	#do the maths
-	print(local_counts)
 	average_connection_time = big_mather(local_counts)
 	print(average_connection_time)
 
+	#turn the seconds into hours, minutes, seconds
+	hms = seconds_to_hms(average_connection_time)
+	#print("%d:%02d:%02d" % (hms[0], hms[1], hms[2]))
+
+	#calculate how far from the average time each connection is
+	dist_from_avg = get_dist(loc = local_counts, avg = average_connection_time)
+	print(dist_from_avg)
+
 	exit()
+
+def get_dist(loc, avg):
+	dist = {}
+	for i,j in loc.items():
+		dist[i] = abs(avg - j)
+	return dist
+
+def seconds_to_hms(secs):
+	m, s = divmod(secs, 60)
+	h, m = divmod(m, 60)
+	result = (h, m, s)
+	return result
 
 def big_mather(counts):
 	average_time = 0
