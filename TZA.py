@@ -99,7 +99,6 @@ def timeZone_ID_Counter(tzIDC, tzID):
 
 
 def get_time_info(islocal, ip, stamp):
-	req = ""
 	#if its not local we need to supply an IP address in the request
 	#noIP
 	if islocal == 1:
