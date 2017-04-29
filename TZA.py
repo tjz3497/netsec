@@ -57,7 +57,7 @@ def the_goods():
 
 	#do the maths
 	average_connection_time = big_mather(local_counts)
-	print(average_connection_time)
+	#print(average_connection_time)
 
 	#turn the seconds into hours, minutes, seconds
 	hms = seconds_to_hms(average_connection_time)
@@ -65,9 +65,13 @@ def the_goods():
 
 	#calculate how far from the average time each connection is
 	dist_from_avg = get_dist(loc = local_counts, avg = average_connection_time)
-	print(dist_from_avg)
+	#print(dist_from_avg)
+	for i,j in dist_from_avg.items():
+		test = {'ip': i, 'distance from average': j}
 
-	exit()
+	test = json.dumps(test)
+	tester = json.loads(test)
+	return(test)
 
 def get_dist(loc, avg):
 	dist = {}
