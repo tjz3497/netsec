@@ -57,15 +57,21 @@ def the_goods(file):
 
 	#do the maths
 	average_connection_time = big_mather(local_counts)
-	print(average_connection_time)
+	#print("Average Connection Time (seconds)")
+	#print(average_connection_time)
 
 	#turn the seconds into hours, minutes, seconds
+	#print("Average Conenctine Time (human readable)")
 	hms = seconds_to_hms(average_connection_time)
 	#print("%d:%02d:%02d" % (hms[0], hms[1], hms[2]))
 
+
+	#print("Suspicious Times TimeZone IDs:")
+	#print(timeZone_IDC)
 	#calculate how far from the average time each connection is
 	dist_from_avg = get_dist(loc = local_counts, avg = average_connection_time)
-	print(dist_from_avg)
+	#print("Suspicious Times Distances from average:")
+	#print(dist_from_avg)
 	for i,j in dist_from_avg.items():
 		test = {'ip': i, 'distance from average': j}
 
@@ -131,4 +137,4 @@ def get_time_info(islocal, ip, stamp):
 	results = (raw, dst, tzid)
 	return results
 
-#the_goods()
+#the_goods("data.pcap")
