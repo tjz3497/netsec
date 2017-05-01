@@ -2,7 +2,7 @@
 TimeZoneAnalyzer -  tool which focuses on the location data of connections which take place.  The tool takes geolocation data from connection IPs and then matches the connection time to the IPs local timezone.  This data will be visualized as  a 'top source location' graph in addition to analysis of what (local) times most users frequently connect.   This will be represented both as raw numbers and statistical data analyzed from the larger data set.  Additionally, I will provide a determination, based on the connection time of the IP, whether or not a connection actually originates from the IP being reported, or if a proxy of some type is being utilized.  This information can be as a metric to attempt to mark suspicious connections, as well as for marketing and demographic purposes.
 
 Usage:
-Simply download the dependencies listed below and run 'python page.py' from the command line.
+Simply download the dependencies listed below and run 'python page.py -f [name of pcap file]' from the command line.
 
 Dependencies:
 Python3

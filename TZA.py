@@ -18,10 +18,10 @@ TZ_START = "https://maps.googleapis.com/maps/api/timezone/json?location="
 TZ_STAMP = "&timestamp="
 TZ_KEY = "&key="
 
-def the_goods():
+def the_goods(file):
 
 	#GET THE PCAP STUFF
-	PCAP_DICT = cutter()
+	PCAP_DICT = cutter(file_name = file)
 
 	#get local timestamp for maps timezone api call
 	timestamp = time.time()
@@ -57,7 +57,7 @@ def the_goods():
 
 	#do the maths
 	average_connection_time = big_mather(local_counts)
-	#print(average_connection_time)
+	print(average_connection_time)
 
 	#turn the seconds into hours, minutes, seconds
 	hms = seconds_to_hms(average_connection_time)
@@ -65,7 +65,7 @@ def the_goods():
 
 	#calculate how far from the average time each connection is
 	dist_from_avg = get_dist(loc = local_counts, avg = average_connection_time)
-	#print(dist_from_avg)
+	print(dist_from_avg)
 	for i,j in dist_from_avg.items():
 		test = {'ip': i, 'distance from average': j}
 
@@ -131,4 +131,4 @@ def get_time_info(islocal, ip, stamp):
 	results = (raw, dst, tzid)
 	return results
 
-the_goods()
+#the_goods()

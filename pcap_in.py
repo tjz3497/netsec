@@ -2,9 +2,9 @@ from scapy.all import *
 import time
 import ipaddress
 
-def cutter():
+def cutter(file_name):
 	#pkts = rdpcap("SkypeIRC.cap")
-	pkts = rdpcap("data.pcap")
+	pkts = rdpcap(file_name)
 
 	cut = {}
 	for pkt in pkts:
