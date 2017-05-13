@@ -8,4 +8,5 @@ static/
 templates/
 backups/
 temp-plot.html
+.gitignore
 __pycache__
