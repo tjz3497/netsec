@@ -3,4 +3,5 @@ data.pcap
 SkypeIRC.cap
 backups/
 temp-plot.html
+.gitignore
 __pycache__
