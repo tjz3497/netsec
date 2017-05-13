@@ -7,13 +7,8 @@ Simply download the dependencies listed below and run 'python page.py -f [name o
 Dependencies:
 Python3
 scapy3k (pip install scapy-python3)
+plotly (pip install plotly)
 flask (pip install flask)
-keen.io (included)
-d3.js (included)
-dc.js(included)
-
-Visualization Based on tutorial from:
-https://github.com/adilmoujahid/DonorsChoose_Visualization
 
 APIs:
 Must have a google maps timezone (https://developers.google.com/maps/documentation/timezone/intro#Responses) API key placed in a keys_local.py file in the local directory with the variable

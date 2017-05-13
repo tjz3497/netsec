@@ -69,9 +69,6 @@ def the_goods(file):
 		temp = {'ip': i, 'distance from average': j}
 		avg_data.append(temp)
 
-	#temp = json.dumps(dist_from_avg)
-	#temp = json.dumps(avg_data)
-	#temper = json.loads(temp)
 	return(avg_data)
 
 def get_dist(loc, avg):
