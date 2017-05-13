@@ -4,4 +4,8 @@ data.pcap
 SkypeIRC.cap
 DonorsChoose_Visualization-master/
 dashboards-gh-pages/
+static/
+templates/
+backups/
+temp-plot.html
 __pycache__
