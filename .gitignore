@@ -2,6 +2,6 @@ keys_local.py
 data.pcap
 SkypeIRC.cap
 backups/
-temp-plot.html
 .gitignore
+*.html
 __pycache__

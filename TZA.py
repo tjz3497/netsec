@@ -3,6 +3,7 @@ import requests
 import re
 import time
 import json
+import pycountry
 
 from keys_local import *
 from pcap_in import *
@@ -12,6 +13,8 @@ from pcap_in import *
 IPINFO_START = "http://ipinfo.io/"
 IPINFO_SL = "/loc"
 IPINFO_END = "loc"
+IPINFO_state = "/region"
+IPINFO_country = "/country'"
 
 #VARIABLE BLOCK for timezone api call
 TZ_START = "https://maps.googleapis.com/maps/api/timezone/json?location="
@@ -36,6 +39,7 @@ def the_goods(file):
 	#IDC = id counter
 	timeZone_IDC = {}
 	local_counts = {}
+	country_ids = []
 
 	#get some big time info for all the IPs
 	for ipper, j in PCAP_DICT.items():
@@ -54,6 +58,11 @@ def the_goods(file):
 
 		#add the current timezone id to the dictionary counting timezone ids
 		timeZone_IDC = timeZone_ID_Counter(tzIDC = timeZone_IDC, tzID = time_break[2])
+		#add the country ID to the list for worldmap
+		country = time_break[3]
+		if(country != ''):
+			country = (pycountry.countries.get(alpha_2 = country)).alpha_3
+			country_ids.append(country)
 
 	#do the maths
 	average_connection_time = big_mather(local_counts)
@@ -69,7 +78,7 @@ def the_goods(file):
 		temp = {'ip': i, 'distance from average': j}
 		avg_data.append(temp)
 
-	return(avg_data)
+	return(avg_data, country_ids)
 
 def get_dist(loc, avg):
 	dist = {}
@@ -101,20 +110,36 @@ def timeZone_ID_Counter(tzIDC, tzID):
 
 
 def get_time_info(islocal, ip, stamp):
+	isLoc = islocal
 	#if its not local we need to supply an IP address in the request
-	#noIP
-	if islocal == 1:
-		req = IPINFO_START + IPINFO_END
 	#IP
-	else:
-		req = IPINFO_START + ip + IPINFO_SL
-	#send the request for the latitude and longitude
-	json = requests.get(req)
-	#make the answer pretty
-	for i in json:
-		loc = i.strip()
-	loc = str(loc)
-	latlon = re.sub("[b']",'',loc)
+	if isLoc == 0:
+		req = IPINFO_START + ip
+		datas = (requests.get(req)).json()
+		print(ip)
+		country = datas["country"]
+		state = datas["region"]
+		if('loc' in datas):
+			loc = datas["loc"]
+			loc = str(loc)
+			latlon = re.sub("[b']",'',loc)
+		else:
+			isLoc = 1
+		if(country == "US" and state != ''):
+			place = ''
+		else:
+			place = country
+	#noIP
+	if isLoc == 1:
+		req = IPINFO_START + IPINFO_END
+		#send the request for the latitude and longitude
+		json = requests.get(req)
+		#make the answer pretty
+		for i in json:
+			loc = i.strip()
+		loc = str(loc)
+		latlon = re.sub("[b']",'',loc)
+		place = ''
 
 	#get the timezone for the given latitude and longitude
 	TZ_CALL = TZ_START+latlon+TZ_STAMP+stamp+TZ_KEY+MAPS_TZ_API
@@ -126,7 +151,5 @@ def get_time_info(islocal, ip, stamp):
 	dst = data["dstOffset"]
 	tzid = data["timeZoneId"]
 	#add em up for the actual time
-	results = (raw, dst, tzid)
+	results = (raw, dst, tzid, place)
 	return results
-
-#the_goods("data.pcap")
