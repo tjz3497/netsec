@@ -1,5 +1,5 @@
-from flask import Flask
-from flask import render_template
+from flask import Flask,redirect
+import json
 import argparse
 import plotly.tools as tools
 import plotly.offline as offline
@@ -25,24 +25,35 @@ def index():
 
 	datas = the_goods(file = file_name)
 
-	df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/2014_world_gdp_with_codes.csv')
 
 	ip_s = []
 	dists = []
-	for each in datas[0]:
+	for each in datas[3]:
 		ip_s.append(each['ip'])
 		dists.append(each['distance from average'])
 
-	print(datas[1])
-	print(dists)
+	dists2 = []
+	for each in datas[0]:
+		dists2.append(each['distance from average'])
+	#print(dists2)
+
+	per_country_avg = {}
+	num_country = {}
+	for code, dist in zip(datas[1], dists2):
+		if(code in per_country_avg):
+			num_country[code] += 1
+			per_country_avg[code] = int((per_country_avg[code] + dist) / num_country[code])
+		else:
+			per_country_avg[code] = dist
+			num_country[code] = 1
 
 	data = [ dict(
 	        type = 'choropleth',
 	        locations = datas[1],
-	        z = dists,
+	        z = dists2,
 	        text = datas[1],
-	        colorscale = [[0,"rgb(5, 10, 172)"],[0.35,"rgb(40, 60, 190)"],[0.5,"rgb(70, 100, 245)"],\
-	            [0.6,"rgb(90, 120, 245)"],[0.7,"rgb(106, 137, 247)"],[1,"rgb(220, 220, 220)"]],
+	        colorscale = [[0,"rgb(172,10,5)"],[0.35,"rgb(190,60,40)"],[0.5,"rgb(245,100,70)"],\
+	            [0.6,"rgb(245,120,90)"],[0.7,"rgb(247,137,106)"],[1,"rgb(220, 220, 220)"]],
 	        autocolorscale = False,
 	        reversescale = True,
 	        #colorscale = ['Virdis'],
@@ -52,63 +63,49 @@ def index():
 	                width = 0.5
 	            ) ),
 	        colorbar = dict(
-	            autotick = False,
-	            tickprefix = '$',
+	            #autotick = False,
+	            autotick = True,
+	            #tickprefix = '',
 	            title = 'Distance From Average (Seconds)'),
 	      ) ]
 
 	layout = dict(
-	    title = '2014 Global GDP',
+	    title = 'Average Variance per Country',
 	    geo = dict(
 	        showframe = False,
-	        showcoastlines = False,
+	        showcoastlines = True,
 	        projection = dict(
 	            type = 'Mercator'
 	        )
 	    )
 	)
 
-	fig = dict( data=data, layout=layout )
-	offline.plot( fig, validate=False)
-	"""
-	ip_s = []
-	dists = []
-	for each in datas:
-		ip_s.append(each['ip'])
-		dists.append(each['distance from average'])
+	map1 = dict( data=data, layout=layout )
+	offline.plot( map1, validate=False, filename = "map_plot.html")
 
 	bar1 = go.Bar(
 		x=ip_s,
-		y=dists
-	)
-	bar2 = go.Bar(
-		x=[1,2,3],
-		y=dists
+		y=dists,
+		marker=dict(
+				color='rgb(225,202,158)'		)
 	)
 
+	barlay = go.Layout(
+		title = 'Suspicious Connection Variance from Average Variance'
+	)
 
-	fig = tools.make_subplots(rows=2, cols=1, subplot_titles=("Distance From Average (seconds)", "Map"))
+	offline.plot(
+		{
+    	"data": [go.Bar(x=ip_s, y=dists)],
+    	"layout": barlay
+		},
+		filename='suspicious_bar.html'
+	)
 
-	fig.append_trace(bar1, 1, 1)
-	fig.append_trace(bar2, 2, 1)
-	fig['layout'].update(height=800, width=800, title='Data')
-	offline.plot(fig)
+	info = "Average Connection Time: " + str(datas[2])
+	print(info)
 
-#	offline.plot({
-#    "data": [go.Bar(x=ip_s, y=dists)],
-#    "data": [go.Bar(x=[1,2,3], y=dists)]
-#	})
-	"""
-	return(exit())
-
-
-@app.route("/data")
-def data():
-	
-	
-
-	return the_goods(file = file_name)
-
+	return(redirect("http://www.github.com/tjz3497/netsec"))
 
 if __name__ == "__main__":
 	app.run(host='0.0.0.0',port=5000)

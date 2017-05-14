@@ -58,6 +58,7 @@ def the_goods(file):
 
 		#add the current timezone id to the dictionary counting timezone ids
 		timeZone_IDC = timeZone_ID_Counter(tzIDC = timeZone_IDC, tzID = time_break[2])
+
 		#add the country ID to the list for worldmap
 		country = time_break[3]
 		if(country != ''):
@@ -70,7 +71,6 @@ def the_goods(file):
 	#turn the seconds into hours, minutes, seconds
 	hms = seconds_to_hms(average_connection_time)
 
-
 	#calculate how far from the average time each connection is
 	dist_from_avg = get_dist(loc = local_counts, avg = average_connection_time)
 	avg_data = []
@@ -78,7 +78,37 @@ def the_goods(file):
 		temp = {'ip': i, 'distance from average': j}
 		avg_data.append(temp)
 
-	return(avg_data, country_ids)
+	#determine if the connection time is weird
+	avg_var = get_avg_var(dist_from_avg)
+	bads = get_bads(dist_from_avg, avg_var)
+
+	susps = []
+	for i,j in bads.items():
+		temp = {'ip': i, 'distance from average': j}
+		susps.append(temp)
+
+	return(avg_data, country_ids, average_connection_time, susps)
+
+def get_bads(distAvg, avgVar):
+	bads = {}
+	distAver = distAvg
+	
+	for ip, dist in distAvg.items():
+		distAver[ip] = distAver[ip] / avgVar
+		if(distAver[ip] > 1.6 or distAver[ip] < .4):
+			bads[ip] = distAver[ip]
+
+	return(bads)
+
+def get_avg_var(distAvg):
+	avg_var = 0;
+	count = 0;
+	for i,j in distAvg.items():
+		count += 1
+		avg_var = int(avg_var + j)
+	avg_var = int(avg_var / count)
+
+	return(avg_var)
 
 def get_dist(loc, avg):
 	dist = {}
@@ -116,7 +146,6 @@ def get_time_info(islocal, ip, stamp):
 	if isLoc == 0:
 		req = IPINFO_START + ip
 		datas = (requests.get(req)).json()
-		print(ip)
 		country = datas["country"]
 		state = datas["region"]
 		if('loc' in datas):
